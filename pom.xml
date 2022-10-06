@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.gaols.unipay</groupId>
+    <groupId>net.verytools</groupId>
     <artifactId>unipay-pc</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.0</version>
     <name>unipay-pc</name>
     <description>统一微信和支付宝支付接口，让支付更便捷！</description>
-    <url>https://github.com/gaols/unipay</url>
+    <url>https://github.com/isaltyfish/unipay</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,19 +34,16 @@
 
     <developers>
         <developer>
-            <name>gaols</name>
-            <email>igaols@foxmail.com</email>
-        </developer>
-        <developer>
-            <name>liuyangkly</name>
+            <name>saltyfish</name>
+            <email>isaltyfish@126.com</email>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:gaols/unipay.git</connection>
-        <developerConnection>scm:git:git@github.com:gaols/unipay.git</developerConnection>
-        <url>git@github.com:gaols/unipay.git</url>
-        <tag>v1.0.3</tag>
+        <connection>scm:git:git@github.com:isaltyfish/unipay.git</connection>
+        <developerConnection>scm:git:git@github.com:isaltyfish/unipay.git</developerConnection>
+        <url>git@github.com:isaltyfish/unipay.git</url>
+        <tag>v1.0.0</tag>
     </scm>
 
     <distributionManagement>
