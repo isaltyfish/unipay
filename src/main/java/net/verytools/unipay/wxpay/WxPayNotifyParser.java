@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
@@ -42,7 +42,7 @@ public class WxPayNotifyParser implements PayNotifyParser {
 
     public WxPayNotifyParser(HttpServletRequest request) {
         try {
-            String xmlData = IOUtils.copyToString(request.getInputStream(), Charset.forName("UTF-8"));
+            String xmlData = IOUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8);
             this.parasMap = parseXml(xmlData);
         } catch (IOException ex) {
             throw new RuntimeException(ex);

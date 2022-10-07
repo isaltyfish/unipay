@@ -14,7 +14,7 @@ public class SimpleLocker implements Locker {
 
     @Override
     public void lock(String name) {
-        int slot = new LockName(name).hashCode() % MAX_LOCKS;
+        int slot = Math.abs(new LockName(name).hashCode() % MAX_LOCKS);
         try {
             locker.lock();
             if (locks[slot] == null) {
@@ -30,10 +30,11 @@ public class SimpleLocker implements Locker {
     public void release(String name) {
         try {
             locker.lock();
-            int slot = new LockName(name).hashCode() % MAX_LOCKS;
+            int slot = Math.abs(new LockName(name).hashCode() % MAX_LOCKS);
             locks[slot].unlock();
         } finally {
             locker.unlock();
         }
     }
+
 }

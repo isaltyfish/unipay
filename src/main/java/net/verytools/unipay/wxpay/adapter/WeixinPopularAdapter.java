@@ -24,7 +24,7 @@ public class WeixinPopularAdapter implements UnipayService {
 
     private static final Logger logger = LoggerFactory.getLogger(WeixinPopularAdapter.class);
     private static boolean keyInit;
-    private static ReentrantLock lock = new ReentrantLock();
+    private static final ReentrantLock lock = new ReentrantLock();
 
     @Override
     public PushOrderResult unifyOrder(OrderContext context, Order order, MchInfo mchInfo) {
@@ -172,8 +172,8 @@ public class WeixinPopularAdapter implements UnipayService {
     }
 
     private void initKeyStore(WxpayMchInfo info) {
-        lock.lock();
         InputStream stream = null;
+        lock.lock();
         try {
             if (!keyInit) {
                 stream = getClass().getClassLoader().getResourceAsStream(info.getKeyPath());
@@ -181,6 +181,7 @@ public class WeixinPopularAdapter implements UnipayService {
                 keyInit = true;
             }
         } finally {
+            lock.unlock();
             if (stream != null) {
                 try {
                     stream.close();
@@ -188,7 +189,6 @@ public class WeixinPopularAdapter implements UnipayService {
                     //
                 }
             }
-            lock.unlock();
         }
     }
 

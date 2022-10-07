@@ -13,6 +13,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -61,10 +62,10 @@ public class WxRefundNotifyParser implements RefundNotifyParser {
     private Map<String, String> decryptReqInfo(String mchKey, String reqInfoStr) {
         try {
             final String keyMd5String = DigestUtils.md5Hex(mchKey).toLowerCase();
-            SecretKeySpec key = new SecretKeySpec(keyMd5String.getBytes(), "AES");
+            SecretKeySpec key = new SecretKeySpec(keyMd5String.getBytes(StandardCharsets.UTF_8), "AES");
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, key);
-            String xmlData = new String(cipher.doFinal(Base64.decodeBase64(reqInfoStr)));
+            String xmlData = new String(cipher.doFinal(Base64.decodeBase64(reqInfoStr)), StandardCharsets.UTF_8);
             return XmlUtils.parseXml(xmlData);
         } catch (NoSuchAlgorithmException | IllegalBlockSizeException | NoSuchPaddingException | BadPaddingException | InvalidKeyException e) {
             throw new RuntimeException(e);

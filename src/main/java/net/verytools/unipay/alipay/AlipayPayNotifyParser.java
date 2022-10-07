@@ -35,7 +35,7 @@ public class AlipayPayNotifyParser implements PayNotifyParser {
 
     @Override
     public Map<String, String> getNotifyParasMap() {
-        return this.parasMap;
+        return Collections.unmodifiableMap(this.parasMap);
     }
 
     public AlipayPayNotifyParser(HttpServletRequest request) {

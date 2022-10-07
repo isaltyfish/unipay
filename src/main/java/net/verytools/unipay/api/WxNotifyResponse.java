@@ -31,4 +31,12 @@ public class WxNotifyResponse {
         xstream.autodetectAnnotations(true);
         return xstream.toXML(this);
     }
+
+    public String getReturnCode() {
+        return returnCode;
+    }
+
+    public String getReturnMsg() {
+        return returnMsg;
+    }
 }

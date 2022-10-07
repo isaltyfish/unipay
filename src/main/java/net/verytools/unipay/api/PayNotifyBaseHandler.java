@@ -9,7 +9,7 @@ import java.util.Map;
 
 public abstract class PayNotifyBaseHandler implements PayNotifyHandler {
 
-    private static Locker locker = new SimpleLocker();
+    private static final Locker locker = new SimpleLocker();
 
     @Override
     public String handle(HttpServletRequest request, MchInfo mchInfo, PayNotifyCallback callback) {

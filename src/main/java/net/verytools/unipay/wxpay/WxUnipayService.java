@@ -15,7 +15,7 @@ public class WxUnipayService implements UnipayService {
     private static final Logger logger = LoggerFactory.getLogger(WxUnipayService.class);
     private static final WxUnipayService service = new WxUnipayService();
 
-    private UnipayService proxy;
+    private final UnipayService proxy;
 
     @Override
     public PushOrderResult unifyOrder(OrderContext context, Order order, MchInfo mchInfo) {

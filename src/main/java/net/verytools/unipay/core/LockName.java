@@ -1,33 +1,28 @@
 package net.verytools.unipay.core;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class LockName {
 
-    private byte[] name;
+    private final byte[] name;
 
     public LockName(String name) {
-        this.name = name.getBytes(Charset.forName("UTF-8"));
+        this.name = name.getBytes(StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LockName lockName = (LockName) o;
+
+        return Arrays.equals(name, lockName.name);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.hashCode(name);
-        return result;
+        return Arrays.hashCode(name);
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof LockName) {
-            return Arrays.equals(name, ((LockName) obj).name);
-        }
-        return obj instanceof String && toString().equals(obj);
-    }
-
 }
