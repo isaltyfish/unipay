@@ -27,7 +27,7 @@ public class WxRefundNotifyParser implements RefundNotifyParser {
     public boolean isSuccess() {
         Map<String, String> parasMap = getNotifyParasMap();
         String refundStatus = parasMap.get("refund_status");
-        return "SUCCESS".equalsIgnoreCase(refundStatus);
+        return Constants.SUCCESS.equalsIgnoreCase(refundStatus);
     }
 
     public String getOutRefundNo() {
@@ -44,7 +44,7 @@ public class WxRefundNotifyParser implements RefundNotifyParser {
         try {
             Map<String, String> map = XmlUtils.parseXml(request.getInputStream());
             String returnCode = map.get("return_code");
-            if ("SUCCESS".equals(returnCode)) {
+            if (Constants.SUCCESS.equals(returnCode)) {
                 String reqInfo = map.get("req_info");
                 if (StringUtils.isNotBlank(reqInfo)) {
                     Map<String, String> xmlMap = decryptReqInfo(mchKey, reqInfo);

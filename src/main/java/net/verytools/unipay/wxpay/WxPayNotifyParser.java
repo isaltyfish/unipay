@@ -1,5 +1,6 @@
 package net.verytools.unipay.wxpay;
 
+import net.verytools.unipay.api.Constants;
 import net.verytools.unipay.api.MchInfo;
 import net.verytools.unipay.api.PayNotifyParser;
 import net.verytools.unipay.core.WxVendor;
@@ -26,7 +27,7 @@ public class WxPayNotifyParser implements PayNotifyParser {
     @Override
     public boolean isSuccess() {
         String resultCode = parasMap.get("result_code");
-        return "SUCCESS".equals(resultCode);
+        return Constants.SUCCESS.equals(resultCode);
     }
 
     @Override

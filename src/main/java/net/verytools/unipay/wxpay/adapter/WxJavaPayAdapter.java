@@ -45,6 +45,8 @@ public class WxJavaPayAdapter implements UnipayService {
             ret.setResponse(resp);
         } catch (WxPayException e) {
             ret.setPushOrderStatus(PushOrderStatus.FAILED);
+            ret.setCode(e.getErrCode());
+            ret.setMsg(e.getErrCodeDes());
             logger.error("create order failed", e);
         }
 
@@ -93,10 +95,12 @@ public class WxJavaPayAdapter implements UnipayService {
         WxRefundResult ret = new WxRefundResult();
         try {
             WxPayRefundResult result = payService(mchInfo).refund(createRefundRequest(request));
-            if ("SUCCESS".equals(result.getResultCode())) {
+            if (Constants.SUCCESS.equals(result.getResultCode())) {
                 ret.setTradeStatus(TradeStatus.SUCCESS);
-            } else if ("FAIL".equals(result.getResultCode())) {
+            } else if (Constants.FAIL.equals(result.getResultCode())) {
                 ret.setTradeStatus(TradeStatus.PAYERROR);
+                ret.setCode(result.getErrCode());
+                ret.setMsg(result.getErrCodeDes());
             } else {
                 ret.setTradeStatus(TradeStatus.UNKNOWN);
             }

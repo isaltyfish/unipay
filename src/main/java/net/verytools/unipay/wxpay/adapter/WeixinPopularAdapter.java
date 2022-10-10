@@ -55,6 +55,9 @@ public class WeixinPopularAdapter implements UnipayService {
             resp.put("prepay_id", result.getPrepay_id());
             resp.put(Constants.OUT_TRADE_NO, order.getOutTradeNo());
             ret.setResponse(resp);
+        } else {
+            ret.setCode(result.getErr_code());
+            ret.setMsg(result.getErr_code_des());
         }
         return ret;
     }
@@ -149,10 +152,12 @@ public class WeixinPopularAdapter implements UnipayService {
         SecapiPayRefundResult result = PayMchAPI.secapiPayRefund(refund, info.getMchKey());
         WxRefundResult ret = new WxRefundResult();
 
-        if ("SUCCESS".equals(result.getResult_code())) {
+        if (Constants.SUCCESS.equals(result.getResult_code())) {
             ret.setTradeStatus(TradeStatus.SUCCESS);
-        } else if ("FAIL".equals(result.getResult_code())) {
+        } else if (Constants.FAIL.equals(result.getResult_code())) {
             ret.setTradeStatus(TradeStatus.PAYERROR);
+            ret.setCode(result.getErr_code());
+            ret.setMsg(result.getErr_code_des());
         } else {
             ret.setTradeStatus(TradeStatus.UNKNOWN);
         }
@@ -198,7 +203,7 @@ public class WeixinPopularAdapter implements UnipayService {
 
     private static boolean isAllSuccess(String... values) {
         for (String v : values) {
-            if (!"SUCCESS".equals(v)) {
+            if (!Constants.SUCCESS.equals(v)) {
                 return false;
             }
         }

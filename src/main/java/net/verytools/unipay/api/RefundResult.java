@@ -8,6 +8,10 @@ public abstract class RefundResult extends BaseApiResult {
         return tradeStatus;
     }
 
+    public boolean isOk() {
+        return getTradeStatus() == TradeStatus.SUCCESS;
+    }
+
     public void setTradeStatus(TradeStatus tradeStatus) {
         this.tradeStatus = tradeStatus;
     }

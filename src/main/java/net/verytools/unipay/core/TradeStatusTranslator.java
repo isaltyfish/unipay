@@ -1,5 +1,6 @@
 package net.verytools.unipay.core;
 
+import net.verytools.unipay.api.Constants;
 import net.verytools.unipay.api.TradeStatus;
 
 public class TradeStatusTranslator {
@@ -24,7 +25,7 @@ public class TradeStatusTranslator {
 
     public static net.verytools.unipay.api.TradeStatus translateWxTradeStatus(String status) {
         net.verytools.unipay.api.TradeStatus retStatus = net.verytools.unipay.api.TradeStatus.UNKNOWN;
-        if ("SUCCESS".equals(status)) {
+        if (Constants.SUCCESS.equals(status)) {
             retStatus = net.verytools.unipay.api.TradeStatus.SUCCESS;
         } else if ("REFUND".equals(status)) {
             retStatus = net.verytools.unipay.api.TradeStatus.REFUND;

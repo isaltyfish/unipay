@@ -1,5 +1,8 @@
 package net.verytools.unipay.api;
 
+/**
+ * https://pay.weixin.qq.com/wiki/doc/api/native_sl.php?chapter=9_1
+ */
 public class WxRefundResult extends RefundResult {
     /**
      * 业务结果.

@@ -14,14 +14,14 @@ public class WxNotifyResponse {
 
     public static String success(String msg) {
         WxNotifyResponse resp = new WxNotifyResponse();
-        resp.returnCode = "SUCCESS";
+        resp.returnCode = Constants.SUCCESS;
         resp.returnMsg = msg;
         return resp.toXml();
     }
 
     public static String fail(String msg) {
         WxNotifyResponse resp = new WxNotifyResponse();
-        resp.returnCode = "FAIL";
+        resp.returnCode = Constants.FAIL;
         resp.returnMsg = msg;
         return resp.toXml();
     }
