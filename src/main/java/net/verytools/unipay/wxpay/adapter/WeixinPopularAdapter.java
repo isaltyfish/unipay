@@ -115,7 +115,8 @@ public class WeixinPopularAdapter implements UnipayService {
      * @param outTradeNo 订单编号
      */
     @Override
-    public void cancelOrder(String outTradeNo, MchInfo mchInfo) {
+    public CancelOrderResult cancelOrder(String outTradeNo, MchInfo mchInfo) {
+        CancelOrderResult ret = new CancelOrderResult();
         WxpayMchInfo info = (WxpayMchInfo) mchInfo;
         Closeorder closeorder = new Closeorder();
         closeorder.setOut_trade_no(outTradeNo);
@@ -124,6 +125,9 @@ public class WeixinPopularAdapter implements UnipayService {
         closeorder.setNonce_str(NonceStr.gen());
         MchBaseResult mchBaseResult = PayMchAPI.payCloseorder(closeorder, info.getMchKey());
         logger.error(String.format("cancel order[%s] with resp.status[%s]", outTradeNo, mchBaseResult.getResult_code()));
+        ret.setCode(mchBaseResult.getErr_code());
+        ret.setMsg(mchBaseResult.getErr_code_des());
+        return ret;
     }
 
     @Override

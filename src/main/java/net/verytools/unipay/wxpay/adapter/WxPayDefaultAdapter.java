@@ -17,7 +17,7 @@ public class WxPayDefaultAdapter implements UnipayService {
     }
 
     @Override
-    public void cancelOrder(String outTradeNo, MchInfo mchInfo) {
+    public CancelOrderResult cancelOrder(String outTradeNo, MchInfo mchInfo) {
         throw new UnsupportedOperationException(msg());
     }
 

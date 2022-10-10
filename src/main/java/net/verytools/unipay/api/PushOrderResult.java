@@ -30,14 +30,14 @@ public class PushOrderResult extends BaseApiResult {
      * 获取生成二维码所需信息。
      */
     public String getQrCodeContent() {
-        return (String) response.get("qr_code_url");
+        return (String) response.get(Constants.QRCODE_URL);
     }
 
     /**
      * 获取商户交易编号。
      */
     public String getOutTradeNo() {
-        return (String) response.get("out_trade_no");
+        return (String) response.get(Constants.OUT_TRADE_NO);
     }
 
     public void setResponse(Map<String, Object> response) {

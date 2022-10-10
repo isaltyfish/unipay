@@ -60,7 +60,7 @@ public class AlipayUnipayService implements UnipayService {
         request.setNotifyUrl(context.getNotifyUrl());
 
         JSONObject bizContent = new JSONObject();
-        bizContent.put("out_trade_no", order.getOutTradeNo());
+        bizContent.put(Constants.OUT_TRADE_NO, order.getOutTradeNo());
         bizContent.put("total_amount", convertTotalAmount(order.getTotalFee()));
         bizContent.put("subject", order.getSubject());
         if (CollectionUtils.isNotEmpty(order.getLineItemList())) {
@@ -73,23 +73,21 @@ public class AlipayUnipayService implements UnipayService {
         Map<String, Object> data = new HashMap<>();
         ret.setResponse(data);
 
-        AlipayTradePrecreateResponse response;
         try {
-            response = alipayClient.execute(request);
+            AlipayTradePrecreateResponse response = alipayClient.execute(request);
             CodeMsgExtractor.extract4Alipay(response, ret);
+            if (response.isSuccess()) {
+                ret.setPushOrderStatus(PushOrderStatus.SUCCESS);
+                data.put(Constants.QRCODE_URL, response.getQrCode());
+                data.put(Constants.OUT_TRADE_NO, response.getOutTradeNo());
+            } else {
+                ret.setPushOrderStatus(PushOrderStatus.FAILED);
+            }
         } catch (AlipayApiException e) {
             logger.error("[alipay] unify order error", e);
             ret.setPushOrderStatus(PushOrderStatus.UNKNOWN);
             data.put("msg", "alipay api exception: " + e.getMessage());
             return ret;
-        }
-
-        if (response.isSuccess()) {
-            ret.setPushOrderStatus(PushOrderStatus.SUCCESS);
-            data.put(Constants.QRCODE_URL, response.getQrCode());
-            data.put(Constants.OUT_TRADE_NO, response.getOutTradeNo());
-        } else {
-            ret.setPushOrderStatus(PushOrderStatus.FAILED);
         }
 
         return ret;
@@ -159,21 +157,25 @@ public class AlipayUnipayService implements UnipayService {
      * @param outTradeNo 订单编号
      */
     @Override
-    public void cancelOrder(String outTradeNo, MchInfo alipayMchInfo) {
+    public CancelOrderResult cancelOrder(String outTradeNo, MchInfo alipayMchInfo) {
         AlipayMchInfo mchInfo = (AlipayMchInfo) alipayMchInfo;
         AlipayClient alipayClient = new DefaultAlipayClient(mchInfo.getOpenApiDomain(), mchInfo.getAppid(), mchInfo.getPrivateKey(), "json", "UTF-8", mchInfo.getAlipayPublicKey(), "RSA2");
         AlipayTradeCancelRequest request = new AlipayTradeCancelRequest();
         JSONObject bizContent = new JSONObject();
-        bizContent.put("out_trade_no", outTradeNo);
+        bizContent.put(Constants.OUT_TRADE_NO, outTradeNo);
         request.setBizContent(bizContent.toString());
+
+        CancelOrderResult ret = new CancelOrderResult();
         try {
             AlipayTradeCancelResponse response = alipayClient.execute(request);
+            CodeMsgExtractor.extract4Alipay(response, ret);
             if (!response.isSuccess()) {
                 logger.error("[alipay] cancel order failed, code: {}, msg: {}, sub_code: {}, sub_msg: {}", response.getCode(), response.getMsg(), response.getSubCode(), response.getSubMsg());
             }
         } catch (AlipayApiException e) {
             logger.error("[alipay] cancel order failed", e);
         }
+        return ret;
     }
 
     @Override
@@ -200,22 +202,7 @@ public class AlipayUnipayService implements UnipayService {
             AlipayTradeRefundResponse response = alipayClient.execute(refundRequest);
             CodeMsgExtractor.extract4Alipay(response, ret);
             if (response.isSuccess()) {
-                ret.setTradeStatus(TradeStatus.SUCCESS);
-                ret.setBuyerLogonId(response.getBuyerLogonId());
-                ret.setBuyerUserId(response.getBuyerUserId());
-                ret.setFundChange(response.getFundChange());
-                ret.setGmtRefundPay(response.getGmtRefundPay());
-                ret.setOpenId(response.getOpenId());
-                ret.setOutTradeNo(response.getOutTradeNo());
-                ret.setPresentRefundBuyerAmount(response.getPresentRefundBuyerAmount());
-                ret.setPresentRefundDiscountAmount(response.getPresentRefundDiscountAmount());
-                ret.setPresentRefundMdiscountAmount(response.getPresentRefundMdiscountAmount());
-                ret.setRefundCurrency(response.getRefundCurrency());
-                ret.setRefundDetailItemList(response.getRefundDetailItemList());
-                ret.setRefundFee(response.getRefundFee());
-                ret.setSendBackFee(response.getSendBackFee());
-                ret.setStoreName(response.getStoreName());
-                ret.setTradeNo(response.getTradeNo());
+                populateRefundResult(ret, response);
             } else {
                 ret.setTradeStatus(TradeStatus.PAYERROR);
                 logger.error("[alipay] refund order failed, code: {}, msg: {}, sub_code: {}, sub_msg: {}", response.getCode(), response.getMsg(), response.getSubCode(), response.getSubMsg());
@@ -225,6 +212,25 @@ public class AlipayUnipayService implements UnipayService {
             logger.error("[alipay] refund order failed", e);
         }
         return ret;
+    }
+
+    private void populateRefundResult(AlipayRefundResult ret, AlipayTradeRefundResponse response) {
+        ret.setTradeStatus(TradeStatus.SUCCESS);
+        ret.setBuyerLogonId(response.getBuyerLogonId());
+        ret.setBuyerUserId(response.getBuyerUserId());
+        ret.setFundChange(response.getFundChange());
+        ret.setGmtRefundPay(response.getGmtRefundPay());
+        ret.setOpenId(response.getOpenId());
+        ret.setOutTradeNo(response.getOutTradeNo());
+        ret.setPresentRefundBuyerAmount(response.getPresentRefundBuyerAmount());
+        ret.setPresentRefundDiscountAmount(response.getPresentRefundDiscountAmount());
+        ret.setPresentRefundMdiscountAmount(response.getPresentRefundMdiscountAmount());
+        ret.setRefundCurrency(response.getRefundCurrency());
+        ret.setRefundDetailItemList(response.getRefundDetailItemList());
+        ret.setRefundFee(response.getRefundFee());
+        ret.setSendBackFee(response.getSendBackFee());
+        ret.setStoreName(response.getStoreName());
+        ret.setTradeNo(response.getTradeNo());
     }
 
     public static UnipayService create() {

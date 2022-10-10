@@ -31,7 +31,7 @@ public interface UnipayService {
      * @param outTradeNo 订单编号
      * @param mchInfo    商户信息
      */
-    void cancelOrder(String outTradeNo, MchInfo mchInfo);
+    CancelOrderResult cancelOrder(String outTradeNo, MchInfo mchInfo);
 
     /**
      * 验签。

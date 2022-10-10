@@ -34,8 +34,8 @@ public class WxUnipayService implements UnipayService {
      * @param outTradeNo 订单编号
      */
     @Override
-    public void cancelOrder(String outTradeNo, MchInfo mchInfo) {
-        proxy.cancelOrder(outTradeNo, mchInfo);
+    public CancelOrderResult cancelOrder(String outTradeNo, MchInfo mchInfo) {
+        return proxy.cancelOrder(outTradeNo, mchInfo);
     }
 
     @Override

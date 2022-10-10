@@ -68,15 +68,19 @@ public class WxJavaPayAdapter implements UnipayService {
     }
 
     @Override
-    public void cancelOrder(String outTradeNo, MchInfo mchInfo) {
+    public CancelOrderResult cancelOrder(String outTradeNo, MchInfo mchInfo) {
         WxPayService wxPayService = payService(mchInfo);
         WxPayOrderCloseRequest queryRequest = new WxPayOrderCloseRequest();
         queryRequest.setOutTradeNo(outTradeNo);
+        CancelOrderResult ret = new CancelOrderResult();
         try {
             wxPayService.closeOrder(queryRequest);
         } catch (WxPayException e) {
+            ret.setCode(e.getErrCode());
+            ret.setMsg(e.getErrCodeDes());
             logger.error("query order status error,outTradeNo={}", outTradeNo, e);
         }
+        return ret;
     }
 
     @Override

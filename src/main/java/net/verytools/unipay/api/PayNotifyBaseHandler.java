@@ -16,7 +16,7 @@ public abstract class PayNotifyBaseHandler implements PayNotifyHandler {
         String lockName = String.valueOf(System.currentTimeMillis());
         PayNotifyParser parser = getPayNotifyParser(request);
         Map<String, String> parasMap = parser.getNotifyParasMap();
-        String outTradeNo = parasMap.get("out_trade_no");
+        String outTradeNo = parasMap.get(Constants.OUT_TRADE_NO);
         if (StringUtils.isNotBlank(outTradeNo)) {
             lockName = outTradeNo;
         }
