@@ -51,9 +51,9 @@ public class WeixinPopularAdapter implements UnipayService {
         ret.setPushOrderStatus(parsePushOrderStatus(result));
         Map<String, Object> resp = new HashMap<>();
         if (PushOrderStatus.SUCCESS == ret.getPushOrderStatus()) {
-            resp.put("qr_code_url", result.getCode_url());
+            resp.put(Constants.QRCODE_URL, result.getCode_url());
             resp.put("prepay_id", result.getPrepay_id());
-            resp.put("out_trade_no", order.getOutTradeNo());
+            resp.put(Constants.OUT_TRADE_NO, order.getOutTradeNo());
             ret.setResponse(resp);
         }
         return ret;

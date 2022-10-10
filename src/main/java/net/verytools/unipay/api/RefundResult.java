@@ -1,6 +1,6 @@
 package net.verytools.unipay.api;
 
-public abstract class RefundResult {
+public abstract class RefundResult extends BaseApiResult {
 
     private TradeStatus tradeStatus;
 

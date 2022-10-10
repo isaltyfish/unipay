@@ -40,8 +40,8 @@ public class WxJavaPayAdapter implements UnipayService {
             WxPayNativeOrderResult pushResult = wxPayService.createOrder(createWxPayUnifiedOrderRequest(context, order));// 内部会自动签名
             ret.setPushOrderStatus(PushOrderStatus.SUCCESS);
             Map<String, Object> resp = new HashMap<>();
-            resp.put("qr_code_url", pushResult.getCodeUrl());
-            resp.put("out_trade_no", order.getOutTradeNo());
+            resp.put(Constants.QRCODE_URL, pushResult.getCodeUrl());
+            resp.put(Constants.OUT_TRADE_NO, order.getOutTradeNo());
             ret.setResponse(resp);
         } catch (WxPayException e) {
             ret.setPushOrderStatus(PushOrderStatus.FAILED);

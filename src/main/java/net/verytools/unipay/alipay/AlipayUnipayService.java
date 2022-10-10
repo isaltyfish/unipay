@@ -15,6 +15,7 @@ import com.alipay.api.response.AlipayTradeRefundResponse;
 import net.verytools.unipay.api.*;
 import net.verytools.unipay.core.PushOrderStatus;
 import net.verytools.unipay.core.TradeStatusTranslator;
+import net.verytools.unipay.utils.CodeMsgExtractor;
 import net.verytools.unipay.utils.MathUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONArray;
@@ -30,7 +31,6 @@ import java.util.Map;
 
 /**
  * https://opendocs.alipay.com/open/02ekfk
- * https://docs.open.alipay.com/api_1/alipay.trade.precreate/
  * https://docs.open.alipay.com/194/105322/ -- a must read
  *
  * @author gaols
@@ -52,7 +52,7 @@ public class AlipayUnipayService implements UnipayService {
      */
     @Override
     public PushOrderResult unifyOrder(OrderContext context, Order order, MchInfo alipayMchInfo) {
-        logger.info("Unify order START: {}", order.toString());
+        logger.info("Unify order START: {}", order);
 
         AlipayMchInfo mchInfo = (AlipayMchInfo) alipayMchInfo;
         AlipayClient alipayClient = new DefaultAlipayClient(mchInfo.getOpenApiDomain(), mchInfo.getAppid(), mchInfo.getPrivateKey(), "json", "UTF-8", mchInfo.getAlipayPublicKey(), "RSA2");
@@ -76,22 +76,18 @@ public class AlipayUnipayService implements UnipayService {
         AlipayTradePrecreateResponse response;
         try {
             response = alipayClient.execute(request);
+            CodeMsgExtractor.extract4Alipay(response, ret);
         } catch (AlipayApiException e) {
             logger.error("[alipay] unify order error", e);
-            ret.setPushOrderStatus(PushOrderStatus.FAILED);
+            ret.setPushOrderStatus(PushOrderStatus.UNKNOWN);
             data.put("msg", "alipay api exception: " + e.getMessage());
             return ret;
         }
 
-        data.put("code", response.getCode());
-        data.put("msg", response.getMsg());
-        data.put("sub_code", response.getSubCode());
-        data.put("sub_msg", response.getSubMsg());
-
         if (response.isSuccess()) {
             ret.setPushOrderStatus(PushOrderStatus.SUCCESS);
-            data.put("qr_code_url", response.getQrCode());
-            data.put("out_trade_no", response.getOutTradeNo());
+            data.put(Constants.QRCODE_URL, response.getQrCode());
+            data.put(Constants.OUT_TRADE_NO, response.getOutTradeNo());
         } else {
             ret.setPushOrderStatus(PushOrderStatus.FAILED);
         }
@@ -139,7 +135,7 @@ public class AlipayUnipayService implements UnipayService {
         AlipayClient alipayClient = new DefaultAlipayClient(mchInfo.getOpenApiDomain(), mchInfo.getAppid(), mchInfo.getPrivateKey(), "json", "UTF-8", mchInfo.getAlipayPublicKey(), "RSA2");
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
         JSONObject bizContent = new JSONObject();
-        bizContent.put("out_trade_no", outTradeNo);
+        bizContent.put(Constants.OUT_TRADE_NO, outTradeNo);
         request.setBizContent(bizContent.toString());
         try {
             AlipayTradeQueryResponse response = alipayClient.execute(request);
@@ -202,6 +198,7 @@ public class AlipayUnipayService implements UnipayService {
         bizContent.put("out_request_no", request.getOutRequestNo());
         try {
             AlipayTradeRefundResponse response = alipayClient.execute(refundRequest);
+            CodeMsgExtractor.extract4Alipay(response, ret);
             if (response.isSuccess()) {
                 ret.setTradeStatus(TradeStatus.SUCCESS);
                 ret.setBuyerLogonId(response.getBuyerLogonId());
@@ -221,11 +218,11 @@ public class AlipayUnipayService implements UnipayService {
                 ret.setTradeNo(response.getTradeNo());
             } else {
                 ret.setTradeStatus(TradeStatus.PAYERROR);
-                logger.error("[alipay] cancel order failed, code: {}, msg: {}, sub_code: {}, sub_msg: {}", response.getCode(), response.getMsg(), response.getSubCode(), response.getSubMsg());
+                logger.error("[alipay] refund order failed, code: {}, msg: {}, sub_code: {}, sub_msg: {}", response.getCode(), response.getMsg(), response.getSubCode(), response.getSubMsg());
             }
         } catch (AlipayApiException e) {
             ret.setTradeStatus(TradeStatus.UNKNOWN);
-            logger.error("[alipay] cancel order failed", e);
+            logger.error("[alipay] refund order failed", e);
         }
         return ret;
     }
