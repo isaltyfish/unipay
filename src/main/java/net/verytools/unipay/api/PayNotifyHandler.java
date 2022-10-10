@@ -1,5 +1,7 @@
 package net.verytools.unipay.api;
 
+import net.verytools.unipay.core.Locker;
+
 import javax.servlet.http.HttpServletRequest;
 
 public interface PayNotifyHandler {
@@ -20,5 +22,5 @@ public interface PayNotifyHandler {
      * @param callback bossiness logic callback when pay is notified.
      * @return appropriate response to alipay pay or weixin pay.
      */
-    String handle(HttpServletRequest request, MchInfo mchInfo, PayNotifyCallback callback);
+    String handle(HttpServletRequest request, MchInfo mchInfo, PayNotifyCallback callback, Locker locker);
 }
