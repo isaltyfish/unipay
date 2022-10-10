@@ -113,6 +113,6 @@ class NotifyController {
 <dependency>
     <groupId>com.github.binarywang</groupId>
     <artifactId>weixin-java-pay</artifactId>
-    <version>3.4.0</version>
+    <version>4.4.0</version>
 </dependency>
 ```

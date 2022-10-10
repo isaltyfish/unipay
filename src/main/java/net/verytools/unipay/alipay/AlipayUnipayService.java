@@ -17,7 +17,6 @@ import net.verytools.unipay.core.PushOrderStatus;
 import net.verytools.unipay.core.TradeStatusTranslator;
 import net.verytools.unipay.utils.CodeMsgExtractor;
 import net.verytools.unipay.utils.MathUtils;
-import org.apache.commons.collections.CollectionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -63,7 +62,7 @@ public class AlipayUnipayService implements UnipayService {
         bizContent.put(Constants.OUT_TRADE_NO, order.getOutTradeNo());
         bizContent.put("total_amount", convertTotalAmount(order.getTotalFee()));
         bizContent.put("subject", order.getSubject());
-        if (CollectionUtils.isNotEmpty(order.getLineItemList())) {
+        if (order.getLineItemList() != null && !order.getLineItemList().isEmpty()) {
             bizContent.put("goods_detail", getGoodsDetails(order));
         }
 
