@@ -26,4 +26,6 @@ public interface PayNotifyParser {
      * 获取异步通知的所有参数。
      */
     Map<String, String> getNotifyParasMap();
+
+    String getOutTradeNo();
 }

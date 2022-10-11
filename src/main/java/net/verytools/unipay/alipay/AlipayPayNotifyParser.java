@@ -1,5 +1,6 @@
 package net.verytools.unipay.alipay;
 
+import net.verytools.unipay.api.Constants;
 import net.verytools.unipay.api.MchInfo;
 import net.verytools.unipay.api.PayNotifyParser;
 import net.verytools.unipay.utils.ParaUtils;
@@ -36,6 +37,11 @@ public class AlipayPayNotifyParser implements PayNotifyParser {
     @Override
     public Map<String, String> getNotifyParasMap() {
         return this.parasMap;
+    }
+
+    @Override
+    public String getOutTradeNo() {
+        return this.parasMap.get(Constants.OUT_TRADE_NO);
     }
 
     public AlipayPayNotifyParser(HttpServletRequest request) {

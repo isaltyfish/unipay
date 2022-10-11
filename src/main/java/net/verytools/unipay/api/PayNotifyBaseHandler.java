@@ -12,7 +12,7 @@ public abstract class PayNotifyBaseHandler implements PayNotifyHandler {
     private static final Locker locker = new SimpleLocker();
 
     @Override
-    public String handle(HttpServletRequest request, MchInfo mchInfo, PayNotifyCallback callback, Locker lock1) {
+    public String handle(HttpServletRequest request, MchInfo mchInfo, PayNotifyCallback callback, Locker handlerLock) {
         String lockName = String.valueOf(System.currentTimeMillis());
         PayNotifyParser parser = getPayNotifyParser(request);
         Map<String, String> parasMap = parser.getNotifyParasMap();
@@ -21,8 +21,8 @@ public abstract class PayNotifyBaseHandler implements PayNotifyHandler {
             lockName = outTradeNo;
         }
         Locker lock = locker;
-        if (lock1 != null) {
-            lock = lock1;
+        if (handlerLock != null) {
+            lock = handlerLock;
         }
         try {
             lock.lock(lockName);

@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 public class AlipayMchInfo extends MchInfo {
 
     private String openApiDomain;   // 支付宝openapi域名
-    private String mcloudApiDomain;  // 支付宝mcloudmonitor域名
     private String pid;             // 商户partner id
     private String appid;           // 商户应用id
 
@@ -30,14 +29,6 @@ public class AlipayMchInfo extends MchInfo {
 
     public void setOpenApiDomain(String openApiDomain) {
         this.openApiDomain = openApiDomain;
-    }
-
-    public String getMcloudApiDomain() {
-        return mcloudApiDomain;
-    }
-
-    public void setMcloudApiDomain(String mcloudApiDomain) {
-        this.mcloudApiDomain = mcloudApiDomain;
     }
 
     public String getPid() {
@@ -129,7 +120,6 @@ public class AlipayMchInfo extends MchInfo {
     public String toString() {
         return "AlipayMchInfo{" +
                 "openApiDomain='" + openApiDomain + '\'' +
-                ", mcloudApiDomain='" + mcloudApiDomain + '\'' +
                 ", pid='" + pid + '\'' +
                 ", appid='" + appid + '\'' +
                 ", signType='" + signType + '\'' +
@@ -143,9 +133,6 @@ public class AlipayMchInfo extends MchInfo {
     public void validate() {
         if (StringUtils.isBlank(openApiDomain)) {
             throw new IllegalArgumentException("openApiDomain required");
-        }
-        if (StringUtils.isBlank(mcloudApiDomain)) {
-            throw new IllegalArgumentException("mcloudApiDomain required");
         }
         if (StringUtils.isBlank(pid)) {
             throw new IllegalArgumentException("pid required");

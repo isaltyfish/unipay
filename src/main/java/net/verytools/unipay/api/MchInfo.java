@@ -32,7 +32,6 @@ public abstract class MchInfo {
             case alipay:
                 AlipayMchInfo alipayMchInfo = new AlipayMchInfo();
                 alipayMchInfo.setOpenApiDomain(prop.get("open_api_domain"));
-                alipayMchInfo.setMcloudApiDomain(prop.get("mcloud_api_domain"));
                 alipayMchInfo.setPid(prop.get("pid"));
                 alipayMchInfo.setAppid(prop.get("appid"));
                 alipayMchInfo.setPrivateKey(prop.get("private_key"));

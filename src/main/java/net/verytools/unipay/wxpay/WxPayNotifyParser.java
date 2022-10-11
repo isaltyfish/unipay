@@ -18,6 +18,7 @@ import java.util.Map;
 
 /**
  * @author gaols
+ * https://pay.weixin.qq.com/wiki/doc/api/native_sl.php?chapter=9_7
  */
 public class WxPayNotifyParser implements PayNotifyParser {
 
@@ -39,6 +40,11 @@ public class WxPayNotifyParser implements PayNotifyParser {
     @Override
     public Map<String, String> getNotifyParasMap() {
         return parasMap;
+    }
+
+    @Override
+    public String getOutTradeNo() {
+        return this.parasMap.get(Constants.OUT_TRADE_NO);
     }
 
     public WxPayNotifyParser(HttpServletRequest request) {
