@@ -77,6 +77,7 @@ public class WxJavaPayAdapter implements UnipayService {
         CancelOrderResult ret = new CancelOrderResult();
         try {
             wxPayService.closeOrder(queryRequest);
+            ret.setResult(true);
         } catch (WxPayException e) {
             ret.setCode(e.getErrCode());
             ret.setMsg(e.getErrCodeDes());

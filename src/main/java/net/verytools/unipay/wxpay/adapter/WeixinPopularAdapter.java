@@ -14,10 +14,7 @@ import weixin.popular.util.SignatureUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class WeixinPopularAdapter implements UnipayService {
@@ -130,6 +127,7 @@ public class WeixinPopularAdapter implements UnipayService {
         logger.error(String.format("cancel order[%s] with resp.status[%s]", outTradeNo, mchBaseResult.getResult_code()));
         ret.setCode(mchBaseResult.getErr_code());
         ret.setMsg(mchBaseResult.getErr_code_des());
+        ret.setResult(Objects.equals(mchBaseResult.getResult_code(), Constants.SUCCESS));
         return ret;
     }
 

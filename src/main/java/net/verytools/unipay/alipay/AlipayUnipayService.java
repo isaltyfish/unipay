@@ -170,6 +170,8 @@ public class AlipayUnipayService implements UnipayService {
             CodeMsgExtractor.extract4Alipay(response, ret);
             if (!response.isSuccess()) {
                 logger.error("[alipay] cancel order failed, code: {}, msg: {}, sub_code: {}, sub_msg: {}", response.getCode(), response.getMsg(), response.getSubCode(), response.getSubMsg());
+            } else {
+                ret.setResult(true);
             }
         } catch (AlipayApiException e) {
             logger.error("[alipay] cancel order failed", e);
