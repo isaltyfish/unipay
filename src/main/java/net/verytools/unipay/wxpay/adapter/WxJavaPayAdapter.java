@@ -133,6 +133,7 @@ public class WxJavaPayAdapter implements UnipayService {
         orderRequest.setOutTradeNo(order.getOutTradeNo());// 商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*且在同一个商户号下唯一。详见商户订单号
         orderRequest.setTotalFee((int) order.getTotalFee());//分
         orderRequest.setSpbillCreateIp(context.getPayerIp());
+        orderRequest.setAttach(order.getAttach());
 
         String orderDetail = buildOrderDetail(order);
         if (StringUtils.isNotBlank(orderDetail)) {

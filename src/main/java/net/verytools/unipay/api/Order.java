@@ -29,6 +29,12 @@ public class Order {
      */
     private long totalFee;
 
+    /**
+     * 附加数据，在查询API和支付通知中原样返回，该字段主要用于商户携带订单的自定义数据
+     * 仅微信支持。
+     */
+    private String attach;
+
     public String getOutTradeNo() {
         return outTradeNo;
     }
@@ -74,6 +80,14 @@ public class Order {
         this.totalFee = totalFee;
     }
 
+    public String getAttach() {
+        return attach;
+    }
+
+    public void setAttach(String attach) {
+        this.attach = attach;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("\n");
@@ -82,6 +96,7 @@ public class Order {
         sb.append(String.format("%10s: %s%n", "subject", subject));
         sb.append(String.format("%10s: %s%n", "body", body));
         sb.append(String.format("%10s: %s%n", "totalFee", totalFee));
+        sb.append(String.format("%10s: %s%n", "attach", attach));
         if (lineItemList != null && !lineItemList.isEmpty()) {
             sb.append("----------------------------------------------------\n");
             sb.append("Line items:\n");

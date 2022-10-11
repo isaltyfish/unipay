@@ -33,6 +33,7 @@ public class WeixinPopularAdapter implements UnipayService {
         unifiedorder.setBody(order.getSubject());
         unifiedorder.setOut_trade_no(order.getOutTradeNo());
         unifiedorder.setTotal_fee(String.valueOf(order.getTotalFee()));
+        unifiedorder.setAttach(order.getAttach());
         String ip = context.getPayerIp();
         logger.error(String.format("Unify order::payer ip is: %s", ip));
         unifiedorder.setSpbill_create_ip(ip);
