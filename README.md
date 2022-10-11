@@ -39,15 +39,14 @@ if (result.isOk()) {
 **10行代码**就生成了二维码内容（字符串），将这个字符串传到网站页面，使用一个二维码js库就可以生成
 一个支付二维码。
 
-> 不知道二维码js库？[戳这里看看！](https://github.com/davidshimjs/qrcodejs)
-> 统一接口，用起来是不是方便，而且只需要短短的10来行代码！是很真的吗？先看完魔鬼细节再说吧！
+不知道二维码js库？[戳这里看看！](https://github.com/davidshimjs/qrcodejs)，统一接口，用起来是不是方便，而且只需要短短的10来行代码！是很真的吗？先看完魔鬼细节再说吧！
 
 ## 配置细节
 
 `MchInfo.create(...)`是为了简化配置而写的工具类，内部实现会根据支付方式的不同自动创建不同的账户配置实例：
 
-* 支付宝对应的是：[AlipayMchInfo](https://github.com/gaols/unipay/blob/master/src/main/java/com/github/gaols/unipay/alipay/AlipayMchInfo.java)；
-* 微信对应的是：[WxpayMchInfo](https://github.com/gaols/unipay/blob/master/src/main/java/com/github/gaols/unipay/wxpay/WxpayMchInfo.java)。
+* 支付宝对应的是：[AlipayMchInfo](https://github.com/isaltyfish/unipay/blob/master/src/main/java/net/verytools/unipay/alipay/AlipayMchInfo.java)；
+* 微信对应的是：[WxpayMchInfo](https://github.com/isaltyfish/unipay/blob/master/src/main/java/net/verytools/unipay/wxpay/WxpayMchInfo.java)。
 
 `MchInfo.create(...)`第二个参数是用来接收收款账户的配置信息。支付宝和微信需要的配置文件是不同，为了简便起见，推荐直接拷贝本项目目录下
 *sample*子目录下的配置文件，将里面的配置信息改成实际的值，放到项目的**src/main/resources**目录下。
@@ -83,7 +82,7 @@ class NotifyController {
                 // 这里处理重复通知，如果已经处理过了，返回true，否则返回false。
                 // 如果这里返回了true，那么onPaySuccess不会执行。
             }
-        });
+        }, null);
     }
 }
 ```
