@@ -51,7 +51,7 @@ if (result.isOk()) {
 `MchInfo.create(...)`第二个参数是用来接收收款账户的配置信息。支付宝和微信需要的配置文件是不同，为了简便起见，推荐直接拷贝本项目目录下
 *sample*子目录下的配置文件，将里面的配置信息改成实际的值，放到项目的**src/main/resources**目录下。
 
-> `MchInfo.create(...)`工具类只是为了简化配置，如有必要，可以根据支付类型的不同手动实例化不同的配置实例。
+`MchInfo.create(...)`工具类只是为了简化配置，也可以选择，直接实例化 `AlipayMchInfo` 或 `WxpayMchInfo`，然后设置好配置信息即可。
 
 ## 处理支付回调
 
@@ -70,10 +70,10 @@ if (result.isOk()) {
 @RequestMapping("/pay/notify")
 @Controller
 class NotifyController {
-    @RequestMapping("/callback")
+    @RequestMapping("/callback/{payType}")
     @ResponseBody
-    public String handleNotify(HttpServletRequest request) {
-        PayNotifyHandler h = NotifyHandlerFactory.getNotifyHandler(PayType.wx); // 如果是支付宝支付回调使用PayType.alipay
+    public String handleNotify(@PathVariable String payType, HttpServletRequest request) {
+        PayNotifyHandler h = NotifyHandlerFactory.getNotifyHandler(payType); // payType 是 wx或者alipay
         return h.handle(request, mchInfo, new PayNotifyCallback() {
             void onPaySuccess(String outTradeNo, Map<String, String> notifyParas) {
                 // 这里处理支付成功的业务逻辑，能够进入这里也表明支付校验已经通过。
