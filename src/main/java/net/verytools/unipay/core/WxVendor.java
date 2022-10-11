@@ -1,6 +1,8 @@
 package net.verytools.unipay.core;
 
 import net.verytools.unipay.api.UnipayService;
+import net.verytools.unipay.wxpay.adapter.WeixinPopularAdapter;
+import net.verytools.unipay.wxpay.adapter.WxJavaPayAdapter;
 import net.verytools.unipay.wxpay.adapter.WxPayDefaultAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,23 +18,21 @@ public class WxVendor {
         return vendor.proxy;
     }
 
-    private void tryProxy(String proxyClass, String proxyAdapterClass) {
+    private void tryProxy(String proxyClass, UnipayService adapter) {
         if (proxy == null) {
             try {
                 Class.forName(proxyClass);
-                proxy = (UnipayService) Class.forName(proxyAdapterClass).newInstance();
+                proxy = adapter;
                 logger.info("{} detected", proxyClass);
             } catch (ClassNotFoundException e) {
                 logger.info("{} not in classpath", proxyClass);
-            } catch (IllegalAccessException | InstantiationException e) {
-                logger.error("instantiate proxy error", e);
             }
         }
     }
 
     private WxVendor() {
-        tryProxy("weixin.popular.bean.paymch.Unifiedorder", "com.github.gaols.unipay.wxpay.adapter.WeixinPopularAdapter");
-        tryProxy("com.github.binarywang.wxpay.service.WxPayService", "com.github.gaols.unipay.wxpay.adapter.WxJavaPayAdapter");
+        tryProxy("weixin.popular.bean.paymch.Unifiedorder", new WeixinPopularAdapter());
+        tryProxy("com.github.binarywang.wxpay.service.WxPayService", new WxJavaPayAdapter());
         if (proxy == null) {
             proxy = new WxPayDefaultAdapter();
         }
