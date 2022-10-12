@@ -191,6 +191,7 @@ public class AlipayUnipayService implements UnipayService {
 
     @Override
     public RefundResult refund(RefundRequest request, MchInfo alipayMchInfo) {
+        request.validate();
         AlipayRefundResult ret = new AlipayRefundResult();
         AlipayMchInfo mchInfo = (AlipayMchInfo) alipayMchInfo;
         AlipayClient alipayClient = new DefaultAlipayClient(mchInfo.getOpenApiDomain(), mchInfo.getAppid(), mchInfo.getPrivateKey(), "json", "UTF-8", mchInfo.getAlipayPublicKey(), "RSA2");

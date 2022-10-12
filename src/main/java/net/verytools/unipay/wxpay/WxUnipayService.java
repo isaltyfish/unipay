@@ -53,6 +53,7 @@ public class WxUnipayService implements UnipayService {
 
     @Override
     public RefundResult refund(RefundRequest request, MchInfo mchInfo) {
+        request.validate();
         return proxy.refund(request, mchInfo);
     }
 
