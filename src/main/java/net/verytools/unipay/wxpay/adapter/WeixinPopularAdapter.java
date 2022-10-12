@@ -4,6 +4,7 @@ import net.verytools.unipay.api.*;
 import net.verytools.unipay.core.PushOrderStatus;
 import net.verytools.unipay.core.TradeStatusTranslator;
 import net.verytools.unipay.wxpay.NonceStr;
+import net.verytools.unipay.wxpay.WxSpMchInfo;
 import net.verytools.unipay.wxpay.WxpayMchInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,10 @@ public class WeixinPopularAdapter implements UnipayService {
         unifiedorder.setNotify_url(context.getNotifyUrl());
         unifiedorder.setTrade_type("NATIVE"); // optimize trade type to support other type of trade.
         unifiedorder.setDetail(createDetail(order));
+
+        if (mchInfo instanceof WxSpMchInfo) {
+            unifiedorder.setSub_mch_id(((WxSpMchInfo) mchInfo).getSubMchId());
+        }
 
         UnifiedorderResult result = PayMchAPI.payUnifiedorder(unifiedorder, info.getMchKey());
         logger.error(String.format("Wx result: return_msg=%s,return_code=%s,sign_status=%s,desc=%s", result.getReturn_msg(), result.getReturn_code(), result.getSign_status(), result.getReturn_msg()));
@@ -148,6 +153,11 @@ public class WeixinPopularAdapter implements UnipayService {
         refund.setRefund_fee(request.getRefundFee());
         refund.setTotal_fee(request.getTotalFee());
         refund.setNotify_url(request.getNotifyUrl());
+
+        if (mchInfo instanceof WxSpMchInfo) {
+            refund.setSub_mch_id(((WxSpMchInfo) mchInfo).getSubMchId());
+        }
+
         SecapiPayRefundResult result = PayMchAPI.secapiPayRefund(refund, info.getMchKey());
         WxRefundResult ret = new WxRefundResult();
 

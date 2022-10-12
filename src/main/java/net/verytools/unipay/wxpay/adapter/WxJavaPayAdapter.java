@@ -17,6 +17,7 @@ import com.google.gson.GsonBuilder;
 import net.verytools.unipay.api.*;
 import net.verytools.unipay.core.PushOrderStatus;
 import net.verytools.unipay.core.TradeStatusTranslator;
+import net.verytools.unipay.wxpay.WxSpMchInfo;
 import net.verytools.unipay.wxpay.WxpayMchInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -151,6 +152,11 @@ public class WxJavaPayAdapter implements UnipayService {
         payConfig.setSignType(info.getSignType());
         payConfig.setTradeType("NATIVE");
         payConfig.setKeyPath(info.getKeyPath());
+
+        if (mchInfo instanceof WxSpMchInfo) {
+            payConfig.setSubMchId(((WxSpMchInfo) mchInfo).getSubMchId());
+        }
+
         WxPayService wxPayService = new WxPayServiceImpl();
         wxPayService.setConfig(payConfig);
         return wxPayService;

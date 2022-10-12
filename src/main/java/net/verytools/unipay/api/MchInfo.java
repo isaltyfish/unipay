@@ -2,6 +2,7 @@ package net.verytools.unipay.api;
 
 import net.verytools.unipay.alipay.AlipayMchInfo;
 import net.verytools.unipay.utils.Prop;
+import net.verytools.unipay.wxpay.WxSpMchInfo;
 import net.verytools.unipay.wxpay.WxpayMchInfo;
 
 public abstract class MchInfo {
@@ -27,6 +28,7 @@ public abstract class MchInfo {
                 wxMchInfo.setMchKey(prop.get("mch_key")); // api key
                 wxMchInfo.setMchId(prop.get("mch_id"));
                 wxMchInfo.setKeyPath(prop.get("key_path")); // 退款证书路径
+                wxMchInfo.setSignType(prop.get("sign_type", "MD5"));
                 wxMchInfo.validate();
                 return wxMchInfo;
             case alipay:
@@ -46,6 +48,31 @@ public abstract class MchInfo {
                 return alipayMchInfo;
             default:
                 throw new IllegalArgumentException("invalid payType");
+        }
+    }
+
+    /**
+     * 创建特约商户配置信息。目前只支持微信特约商户，支付宝暂不支持。
+     *
+     * @param payType  pay type
+     * @param filename 配置文件路径，配置文件需要房子
+     * @return 特约商户配置信息
+     */
+    public static MchInfo createSpMchInfo(PayType payType, String filename) {
+        Prop prop = new Prop(filename);
+        switch (payType) {
+            case wx:
+                WxSpMchInfo mchInfo = new WxSpMchInfo();
+                mchInfo.setAppId(prop.get("app_id"));
+                mchInfo.setMchKey(prop.get("mch_key")); // api key
+                mchInfo.setMchId(prop.get("mch_id"));
+                mchInfo.setSubMchId(prop.get("sub_mch_id"));
+                mchInfo.setKeyPath(prop.get("key_path")); // 退款证书路径
+                mchInfo.setSignType(prop.get("sign_type", "MD5"));
+                mchInfo.validate();
+                return mchInfo;
+            default:
+                throw new IllegalArgumentException("pay type not supported yet: " + payType);
         }
     }
 
