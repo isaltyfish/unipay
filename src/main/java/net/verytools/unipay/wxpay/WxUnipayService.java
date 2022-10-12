@@ -17,6 +17,14 @@ public class WxUnipayService implements UnipayService {
 
     private final UnipayService proxy;
 
+    /**
+     * 实现的是v2版本的支付。
+     * https://pay.weixin.qq.com/wiki/doc/api/native_sl.php?chapter=9_1
+     *
+     * @param context The servlet context for this order.
+     * @param order   订单信息
+     * @param mchInfo 下单对应的商户信息
+     */
     @Override
     public PushOrderResult unifyOrder(OrderContext context, Order order, MchInfo mchInfo) {
         logger.error("Unify order START: " + order.toString());

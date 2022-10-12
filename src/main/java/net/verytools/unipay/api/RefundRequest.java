@@ -124,9 +124,6 @@ public class RefundRequest {
     }
 
     public void validate() {
-        if (StringUtils.isBlank(outTradeNo)) {
-            throw new IllegalArgumentException("outTradeNo required");
-        }
         if (refundFee <= 0) {
             throw new IllegalArgumentException("refundFee required");
         }
@@ -135,13 +132,16 @@ public class RefundRequest {
         }
 
         if (PayType.wx == this.payType) {
-            if (StringUtils.isBlank(transactionId)) {
-                throw new IllegalArgumentException("transactionId required");
+            if (StringUtils.isBlank(transactionId) && StringUtils.isBlank(outTradeNo)) {
+                throw new IllegalArgumentException("transactionId or outTradeNo is required");
             }
             if (totalFee <= 0) {
                 throw new IllegalArgumentException("totalFee required");
             }
         } else if (PayType.alipay == this.payType) {
+            if (StringUtils.isBlank(outTradeNo)) {
+                throw new IllegalArgumentException("outTradeNo required");
+            }
             if (StringUtils.isBlank(refundReason)) {
                 throw new IllegalArgumentException("refundReason required");
             }
