@@ -6,6 +6,7 @@ import net.verytools.unipay.core.TradeStatusTranslator;
 import net.verytools.unipay.wxpay.NonceStr;
 import net.verytools.unipay.wxpay.WxSpMchInfo;
 import net.verytools.unipay.wxpay.WxpayMchInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weixin.popular.api.PayMchAPI;
@@ -13,6 +14,8 @@ import weixin.popular.bean.paymch.*;
 import weixin.popular.client.LocalHttpClient;
 import weixin.popular.util.SignatureUtil;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -21,8 +24,12 @@ import java.util.concurrent.locks.ReentrantLock;
 public class WeixinPopularAdapter implements UnipayService {
 
     private static final Logger logger = LoggerFactory.getLogger(WeixinPopularAdapter.class);
-    private static boolean keyInit;
     private static final ReentrantLock lock = new ReentrantLock();
+    private static final Set<String> mchIdSet = new HashSet<>();
+    /**
+     * 特约商户的mchId
+     */
+    private static final Set<String> spMchIdSet = new HashSet<>();
 
     @Override
     public PushOrderResult unifyOrder(OrderContext context, Order order, MchInfo mchInfo) {
@@ -150,7 +157,10 @@ public class WeixinPopularAdapter implements UnipayService {
         refund.setOut_refund_no(request.getOutRequestNo());
         refund.setOut_trade_no(request.getOutTradeNo());
         refund.setTransaction_id(request.getTransactionId());
+        refund.setNonce_str(NonceStr.gen());
         refund.setRefund_fee(request.getRefundFee());
+        refund.setMch_id(info.getMchId());
+        refund.setAppid(info.getAppId());
         refund.setTotal_fee(request.getTotalFee());
         refund.setNotify_url(request.getNotifyUrl());
 
@@ -160,7 +170,9 @@ public class WeixinPopularAdapter implements UnipayService {
 
         SecapiPayRefundResult result = PayMchAPI.secapiPayRefund(refund, info.getMchKey());
         WxRefundResult ret = new WxRefundResult();
-
+        if (Objects.equals(Constants.FAIL, result.getReturn_code())) {
+            ret.setMsg(result.getReturn_msg());
+        }
         if (Constants.SUCCESS.equals(result.getResult_code())) {
             ret.setTradeStatus(TradeStatus.SUCCESS);
         } else if (Constants.FAIL.equals(result.getResult_code())) {
@@ -193,10 +205,21 @@ public class WeixinPopularAdapter implements UnipayService {
         InputStream stream = null;
         lock.lock();
         try {
-            if (!keyInit) {
-                stream = getClass().getClassLoader().getResourceAsStream(info.getKeyPath());
-                LocalHttpClient.initMchKeyStore(info.getMchId(), stream);
-                keyInit = true;
+            if (info instanceof WxSpMchInfo) {
+                if (spMchIdSet.contains(info.getMchId())) {
+                    return;
+                }
+            } else {
+                if (mchIdSet.contains(info.getMchId())) {
+                    return;
+                }
+            }
+            stream = readKey(info.getKeyPath());
+            LocalHttpClient.initMchKeyStore(info.getMchId(), stream);
+            if (info instanceof WxSpMchInfo) {
+                spMchIdSet.add(info.getMchId());
+            } else {
+                mchIdSet.add(info.getMchId());
             }
         } finally {
             lock.unlock();
@@ -208,6 +231,26 @@ public class WeixinPopularAdapter implements UnipayService {
                 }
             }
         }
+    }
+
+    private InputStream readKey(String keyPath) {
+        if (StringUtils.isBlank(keyPath)) {
+            throw new IllegalArgumentException("key is required for refunding");
+        }
+        if (keyPath.startsWith("/")) {
+            try {
+                return new FileInputStream(keyPath);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException("key specified may not exists: " + keyPath);
+            }
+        }
+        if (keyPath.startsWith("classpath:")) {
+            keyPath = keyPath.replace("classpath:", "");
+            if (keyPath.startsWith("/")) {
+                keyPath = keyPath.replace("/", "");
+            }
+        }
+        return getClass().getClassLoader().getResourceAsStream(keyPath);
     }
 
     private static boolean isAllSuccess(String... values) {
