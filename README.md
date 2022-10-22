@@ -110,8 +110,8 @@ class NotifyController {
 
 <!-- 或者 -->
 <dependency>
-<groupId>com.github.liyiorg</groupId>
-<artifactId>weixin-popular</artifactId>
-<version>2.8.32</version>
+    <groupId>com.github.liyiorg</groupId>
+    <artifactId>weixin-popular</artifactId>
+    <version>2.8.32</version>
 </dependency>
 ```
