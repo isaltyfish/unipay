@@ -9,9 +9,9 @@
 
 ```xml
 <dependency>
-    <groupId>com.github.gaols.unipay</groupId>
+    <groupId>net.verytools</groupId>
     <artifactId>unipay-pc</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
@@ -99,19 +99,19 @@ class NotifyController {
 </dependency>
 ```
 
-如果要支持微信支付，需要引入`weixin-java-pay`或者`weixin-popular`。二选一即可！
+如果要支持微信支付，需要引入`weixin-java-pay`（推荐）或者`weixin-popular`。二选一即可！
 
 ```xml
-<dependency>
-    <groupId>com.github.liyiorg</groupId>
-    <artifactId>weixin-popular</artifactId>
-    <version>2.8.32</version>
-</dependency>
-
-<!-- 或者 -->
 <dependency>
     <groupId>com.github.binarywang</groupId>
     <artifactId>weixin-java-pay</artifactId>
     <version>4.4.0</version>
+</dependency>
+
+<!-- 或者 -->
+<dependency>
+<groupId>com.github.liyiorg</groupId>
+<artifactId>weixin-popular</artifactId>
+<version>2.8.32</version>
 </dependency>
 ```
