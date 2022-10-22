@@ -115,3 +115,7 @@ class NotifyController {
     <version>2.8.32</version>
 </dependency>
 ```
+
+## 更多帮助信息
+
+[https://verytools.net/xtools-guide/qr-unipay](https://verytools.net/xtools-guide/qr-unipay)
