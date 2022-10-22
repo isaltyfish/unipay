@@ -1,8 +1,8 @@
 package net.verytools.unipay.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.*;
 import java.nio.charset.Charset;
 
 public class IOUtils {
@@ -18,5 +18,30 @@ public class IOUtils {
             out.append(buffer, 0, bytesRead);
         }
         return out.toString();
+    }
+
+    /**
+     * read key as input stream.
+     *
+     * @param keyPath the key path, should be absolute path or path relative to classpath.
+     */
+    public static InputStream readKey(String keyPath) {
+        if (StringUtils.isBlank(keyPath)) {
+            throw new IllegalArgumentException("key is required for refunding");
+        }
+        if (keyPath.startsWith("/")) {
+            try {
+                return new FileInputStream(keyPath);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException("key specified may not exists: " + keyPath);
+            }
+        }
+        if (keyPath.startsWith("classpath:")) {
+            keyPath = keyPath.replace("classpath:", "");
+            if (keyPath.startsWith("/")) {
+                keyPath = keyPath.replace("/", "");
+            }
+        }
+        return IOUtils.class.getClassLoader().getResourceAsStream(keyPath);
     }
 }

@@ -3,10 +3,10 @@ package net.verytools.unipay.wxpay.adapter;
 import net.verytools.unipay.api.*;
 import net.verytools.unipay.core.PushOrderStatus;
 import net.verytools.unipay.core.TradeStatusTranslator;
+import net.verytools.unipay.utils.IOUtils;
 import net.verytools.unipay.wxpay.NonceStr;
 import net.verytools.unipay.wxpay.WxSpMchInfo;
 import net.verytools.unipay.wxpay.WxpayMchInfo;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weixin.popular.api.PayMchAPI;
@@ -14,8 +14,6 @@ import weixin.popular.bean.paymch.*;
 import weixin.popular.client.LocalHttpClient;
 import weixin.popular.util.SignatureUtil;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -214,7 +212,7 @@ public class WeixinPopularAdapter implements UnipayService {
                     return;
                 }
             }
-            stream = readKey(info.getKeyPath());
+            stream = IOUtils.readKey(info.getKeyPath());
             LocalHttpClient.initMchKeyStore(info.getMchId(), stream);
             if (info instanceof WxSpMchInfo) {
                 spMchIdSet.add(info.getMchId());
@@ -231,26 +229,6 @@ public class WeixinPopularAdapter implements UnipayService {
                 }
             }
         }
-    }
-
-    private InputStream readKey(String keyPath) {
-        if (StringUtils.isBlank(keyPath)) {
-            throw new IllegalArgumentException("key is required for refunding");
-        }
-        if (keyPath.startsWith("/")) {
-            try {
-                return new FileInputStream(keyPath);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException("key specified may not exists: " + keyPath);
-            }
-        }
-        if (keyPath.startsWith("classpath:")) {
-            keyPath = keyPath.replace("classpath:", "");
-            if (keyPath.startsWith("/")) {
-                keyPath = keyPath.replace("/", "");
-            }
-        }
-        return getClass().getClassLoader().getResourceAsStream(keyPath);
     }
 
     private static boolean isAllSuccess(String... values) {
