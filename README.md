@@ -118,4 +118,4 @@ class NotifyController {
 
 ## 更多帮助信息
 
-[https://verytools.net/xtools-guide/qr-unipay](https://verytools.net/xtools-guide/qr-unipay)
+[https://verytools.net/xtools-guide/posts/qr-unipay](https://verytools.net/xtools-guide/posts/qr-unipay)
